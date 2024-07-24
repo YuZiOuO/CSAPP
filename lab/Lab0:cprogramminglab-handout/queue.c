@@ -201,6 +201,7 @@ void queue_reverse(queue_t *q) {
     list_ele_t *this = q->head;
     list_ele_t *prev = NULL;
     list_ele_t *next = NULL;
+    q->tail = q->head;
     while (true) {
         next = this->next;
         this->next = prev;
@@ -208,6 +209,7 @@ void queue_reverse(queue_t *q) {
         this = next;
         if (!this->next) {
             this->next = prev;
+            q->head = this;
             break;
         }
     }
