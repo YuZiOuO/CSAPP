@@ -166,7 +166,10 @@ bool queue_remove_head(queue_t *q, char *buf, size_t bufsize) {
     if (!q->head) {
         q->tail = NULL;
     }
-    strncpy(buf, elem_waiting_remove->value, bufsize - strlen(buf) - 1);
+    if (buf) {
+        strncpy(buf, elem_waiting_remove->value, bufsize - 1);
+        buf[bufsize - 1] = '\0';
+    }
     free(elem_waiting_remove->value);
     free(elem_waiting_remove);
     q->size--;
@@ -200,19 +203,21 @@ size_t queue_size(queue_t *q) {
  */
 void queue_reverse(queue_t *q) {
     /* You need to write the code for this function */
-    list_ele_t *this = q->head;
-    list_ele_t *prev = NULL;
-    list_ele_t *next = NULL;
-    q->tail = q->head;
-    while (true) {
-        next = this->next;
-        this->next = prev;
-        prev = this;
-        this = next;
-        if (!this->next) {
+    if (!(q->head == q->tail)) {
+        list_ele_t *this = q->head;
+        list_ele_t *prev = NULL;
+        list_ele_t *next = NULL;
+        q->tail = q->head;
+        while (true) {
+            next = this->next;
             this->next = prev;
-            q->head = this;
-            break;
+            prev = this;
+            this = next;
+            if (!this->next) {
+                this->next = prev;
+                q->head = this;
+                break;
+            }
         }
     }
 }
