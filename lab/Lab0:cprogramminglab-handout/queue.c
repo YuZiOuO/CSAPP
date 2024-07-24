@@ -40,20 +40,22 @@ queue_t *queue_new(void) {
 void queue_free(queue_t *q) {
     /* How about freeing the list elements and the strings? */
     /*Free from top*/
-    list_ele_t *elemPtr = q->head;
-    list_ele_t *_ = elemPtr->next;
-    while (true) {
-        free(elemPtr->value);
-        free(elemPtr);
-        elemPtr = _;
-        if (elemPtr) {
-            _ = elemPtr->next;
-        } else {
-            break;
+    if (!q) {
+        list_ele_t *elemPtr = q->head;
+        list_ele_t *_ = elemPtr->next;
+        while (true) {
+            free(elemPtr->value);
+            free(elemPtr);
+            elemPtr = _;
+            if (elemPtr) {
+                _ = elemPtr->next;
+            } else {
+                break;
+            }
         }
+        /* Free queue structure */
+        free(q);
     }
-    /* Free queue structure */
-    free(q);
 }
 
 /**
@@ -118,11 +120,11 @@ bool queue_insert_tail(queue_t *q, const char *s) {
     if (!newh) {
         return false;
     }
-    newh->value = malloc(sizeof(char));
+    newh->value = malloc(strlen(s) + 1);
     if (!newh->value) {
         return false;
     }
-    *(newh->value) = *s;
+    strcpy(newh->value, s);
     newh->next = NULL;
     if (q->tail) {
         q->tail->next = newh;
