@@ -40,17 +40,19 @@ queue_t *queue_new(void) {
 void queue_free(queue_t *q) {
     /* How about freeing the list elements and the strings? */
     /*Free from top*/
-    if (!q) {
-        list_ele_t *elemPtr = q->head;
-        list_ele_t *_ = elemPtr->next;
-        while (true) {
-            free(elemPtr->value);
-            free(elemPtr);
-            elemPtr = _;
-            if (elemPtr) {
-                _ = elemPtr->next;
-            } else {
-                break;
+    if (q) {
+        if (q->size != 0) {
+            list_ele_t *elemPtr = q->head;
+            list_ele_t *_ = elemPtr->next;
+            while (true) {
+                free(elemPtr->value);
+                free(elemPtr);
+                elemPtr = _;
+                if (elemPtr) {
+                    _ = elemPtr->next;
+                } else {
+                    break;
+                }
             }
         }
         /* Free queue structure */
