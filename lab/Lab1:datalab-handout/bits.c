@@ -188,7 +188,7 @@ int allOddBits(int x) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  return (~x)+1;
 }
 //3
 /* 
@@ -201,7 +201,10 @@ int negate(int x) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
-  return 2;
+  int _0 = !(x>>8); //test if bit8-31 equals zero
+  int _1 = !(((x^0x30)>>4)&0xf); //test if bit4-8 equals 0011
+  int _2 = (((x^0x8)>>1)&0x7); //xor 110^bit1-3 
+  return _0&_1&((!_2)|(_2>>2)); //isDigit if xor==0 or bit4==0
 }
 /* 
  * conditional - same as x ? y : z 
