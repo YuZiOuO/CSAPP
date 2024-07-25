@@ -164,7 +164,7 @@ int tmin(void) {
  */
 int isTmax(int x) {
   int tmin = 1<<31;
-  int xor = (x&(~tmin))|((~x)&tmin);
+  int xor = x^tmin;
   return !(xor+1);
 }
 /* 
@@ -176,7 +176,9 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  return 2;
+  int constant = 0xaa;
+  int _ = (x&constant)&((x>>8)&constant)&((x>>16)&constant)&((x>>24)&constant);
+  return !((_&0xff)^constant);
 }
 /* 
  * negate - return -x 
