@@ -234,7 +234,6 @@ int isLessOrEqual(int x, int y) {
   int _0 = ((~sign)&ifSame)|(sign&ifDiff); // give -1(0xffffffff) when x<=y,else 0;
   return !((_0)+1);
 }
-//4
 /* 
  * logicalNeg - implement the ! operator, using all of 
  *              the legal operators except !
