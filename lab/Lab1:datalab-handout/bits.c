@@ -214,7 +214,8 @@ int isAsciiDigit(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  int _0 = ~(!x)+1; //x=0 -> _0=-1;x!=0 -> _0 = 0;
+  return ((~_0)&y)|(_0&z);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
