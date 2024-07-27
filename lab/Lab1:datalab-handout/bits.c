@@ -176,9 +176,11 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  int constant = 0xaa;
-  int _ = (x&constant)&((x>>8)&constant)&((x>>16)&constant)&((x>>24)&constant);
-  return !((_&0xff)^constant);
+  int _0 = x&x>>16;
+  int _1 = _0&(_0>>8);
+  int _2 = _1&(_1>>4);
+  int _3 = _2&(_2>>2);
+  return (2&_3)>>1;
 }
 /* 
  * negate - return -x 
