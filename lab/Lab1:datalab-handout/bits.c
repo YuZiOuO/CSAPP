@@ -265,7 +265,20 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  return 0;
+  int sign = x>>31;
+  int nx = x^sign;
+  int ffff = (0xff<<8)|0xff;
+  int _16 = !((nx>>16)&ffff);
+  int offset16 = 0x10^(_16<<4);
+  int _8 = !((nx>>(8+offset16))&0xff);
+  int offset8 = (0x8^(_8<<3))+offset16;
+  int _4 = !((nx>>(4+offset8))&0xf);
+  int offset4 = (0x4^(_4<<2))+offset8;
+  int _2 = !((nx>>(2+offset4))&0x3);
+  int offset2 = (0x2^(_2<<1))+offset4;
+  int _1 = !((nx>>(1+offset2))&0x1);
+  int _0 = !((nx>>offset2)&0x1);
+  return ((!_16)<<4)+((!_8)<<3)+((!_4)<<2)+((!_2)<<1)+(!_1)+(!_0)+((!_1)&(_0))+1;
 }
 //float
 /* 
