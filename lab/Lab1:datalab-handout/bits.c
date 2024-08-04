@@ -319,7 +319,28 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  int exp = (uf>>23)&0xff;
+  int expBiased = exp-127;
+  int sign = (uf>>31)&1;
+  int frac = (uf&(0x7fffffff))|(0x800000);
+  if(expBiased<0){
+    return 0;
+  }
+  else if(expBiased<=23){
+    frac = frac >> (23-expBiased);
+  }
+  else if(expBiased<=31){
+    frac = frac << (expBiased-23);
+  }
+  else{
+    return 0x80000000;
+  }
+  if(sign){
+    return (~frac)+1;
+  }
+  else{
+    return frac;
+  }
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
