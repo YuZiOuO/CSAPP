@@ -322,7 +322,7 @@ int floatFloat2Int(unsigned uf) {
   int exp = (uf>>23)&0xff;
   int expBiased = exp-127;
   int sign = (uf>>31)&1;
-  int frac = (uf&(0x7fffffff))|(0x800000);
+  int frac = (uf&(0x7fffff))|(0x800000);
   if(expBiased<0){
     return 0;
   }
