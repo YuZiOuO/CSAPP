@@ -1,4 +1,4 @@
-#include <registers.h>
+#include "registers.h"
 int phase2(char* edi){ //edi=input
     stackPush(rbp);
     stackPush(rbx);
