@@ -1,4 +1,9 @@
 #include "registers.h"
+/*all possible solution:
+    0 0
+    3 0
+    7 0
+*/
 int phase4(){
     rsp -= 24;
     rcx = *(rsp+12);
