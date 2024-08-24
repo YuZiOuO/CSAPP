@@ -48,7 +48,7 @@ int strings_not_equal_readable(char* arg1,char* arg2){
     }
     while(arg1 != '\0'){
         if(*arg1 != *arg2){
-            return 1
+            return 1;
         }
         arg1++;
         arg2++;
