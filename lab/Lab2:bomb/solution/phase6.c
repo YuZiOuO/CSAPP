@@ -95,7 +95,7 @@ int phase6_readable(){
     stackPush(r14,r13,r12,rbp,rbx);
     rsp-=50;
     r13,rsi = rsp;
-    read_six_number();
+    read_six_number();//依次保存到*(rsp+4*i) eax返回输入个数;
     r14 = rsp;
     r12d = 0;
     while (TRUE)
@@ -122,7 +122,7 @@ int phase6_readable(){
             }
         }while(ebx<=5);
         r13 += 4;
-    }
+    }//every input ought to be different
     rsi = rsp+0x18;
     rax = r14;
     ecx = 7;
@@ -131,7 +131,7 @@ int phase6_readable(){
         edx -= *rax;
         *rax = edx;
         rax += 4;
-    }while(rax != rsi);
+    }while(rax != rsi);//input[i] = 7-input[i] for i in range(0,6) 
     esi = 0;
     goto L6;
     while(TRUE){
@@ -141,17 +141,26 @@ int phase6_readable(){
             continue;
         }
         do{
-            L9:edx = 0x6032d0;
-            L8:*(rsp+2*rsi+0x20) = rdx;
+            edx = 0x6032d0;//0x6032d0:4c 01 00 00
+            *(rsp+2*rsi+0x20) = rdx;
             rsi += 4;
             if(rsi == 0x18){
                 goto L10;
             }
-            L6:ecx = *(rsp+rsi);
+            L6:ecx = *(rsp+rsi);//traverse every input
         }while(ecx<=1);
         eax = 1;
         edx = 0x6032d0;
     }
+    //successively store 6 int64 value (int32)*(0x6032d0+8*input[i]) at *(rsp+0x20)
+    //except when input[i] = 1 , stores 0x006032d0
+    /*debug:
+    0x7fffffffdc90: 0x00000006      0x00000005      0x00000004      0x00000003
+    0x7fffffffdca0: 0x00000002      0x00000001      0x00000000      0x00000000
+    0x7fffffffdcb0: 0x00603320      0x00000000      0x00603310      0x00000000
+    0x7fffffffdcc0: 0x00603300      0x00000000      0x006032f0      0x00000000
+    0x7fffffffdcd0: 0x006032e0      0x00000000      0x006032d0      0x00000000
+    */
     L10:rbx = *(rsp+0x20);
     rax = rsp+0x28;
     rsi = rax+0x50;
@@ -160,7 +169,7 @@ int phase6_readable(){
     {
         rdx = *rax;
         *(rcx+8) = rdx;
-        rax = 8;
+        rax += 8;
         if(rax == rsi){
             break;
         }
