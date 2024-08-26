@@ -1,8 +1,8 @@
 int* rdi,rsi,rdx,rcx,r8,r9;//arg
 int* rax;//return val
 int* rsp;//stack
-int* r10,r11;//caller saved
-int* rbx,rbp,r12,r13,r14,r15;//callee saved
+int* r10,r11;//caller-saved
+int* rbx,rbp,r12,r13,r14,r15;//callee-saved(all other registers are caller-save)
 //QWORD
 
 int* al,bl,cl,dl,
