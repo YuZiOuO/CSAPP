@@ -152,7 +152,7 @@ int phase6_readable(){
         eax = 1;
         edx = 0x6032d0;
     }
-    //successively store 6 int64 value (int32)*(0x6032d0+8*input[i]) at *(rsp+0x20)
+    //successively store 6 int64 value addr[i] =  (int32)*(0x6032d0+8*input[i]) at *(rsp+0x20)
     //except when input[i] = 1 , stores 0x006032d0
     /*debug:
     0x7fffffffdc90: 0x00000006      0x00000005      0x00000004      0x00000003
@@ -163,7 +163,7 @@ int phase6_readable(){
     */
     L10:rbx = *(rsp+0x20);
     rax = rsp+0x28;
-    rsi = rax+0x50;
+    rsi = rsp+0x50;
     rcx = rbx;
     while (TRUE)
     {
@@ -176,16 +176,83 @@ int phase6_readable(){
         rcx = rdx;
     }
     *(rdx+8) = 0;
+    /*
+    * traverse every value(aka an addr) stored at *(rsp+0x20);
+    * *(addr[i]+8) = addr[i+1];
+    * except:(addr[i]+8) = 0 when i=5
+    * 构造链表,0为空指针
+    */
     ebp = 5;
+    /*
+    * now:
+    * rax:rsp+0x50
+    * rbx:*(rsp+0x20) //rbx = first addr
+    */
     do{
-        rax = *(rbx+8);
-        eax = *rax;
-        if(*rbx != eax){
+        rax = *(rbx+8); //rax = next addr
+        eax = *rax; //eax = next elem
+        if(*rbx < eax){ //next elem ought to < prve elem
             explode_bomb();
         }
         rbx = *(rbx+8);
         ebp -= 1;
     }while(ebp != 0);
+    //require *(addr[i]+8) >= *(addr[i+1]+8);
     rsp += 50;
     stackPop(r14,r13,r12,rbp,rbx);
+}
+
+int phase6_c(){
+    int input[6];
+    scanf("%d %d %d %d %d %d",input);
+    for(int i=0;i<5;i++){
+        for(int j=i+1;j<5;j++){
+            if(input[i] == input[j]){
+                explode_bomb();
+            }
+        }
+    }
+    for(int i=0;i<5;i++){
+        input[i] = 7-input[i];
+    }
+    int* addr[6];
+    for(int i=0;i<5;i++){
+        if(input[i] == 1){
+            addr[i] = 0x6032d0;
+        }
+        else{
+            addr[i] = *(0x6032d0+0x10*(input[i]-1)+8);
+            /*
+            6032d0 4c010000 01000000 e0326000 00000000  L........2`.....
+            6032e0 a8000000 02000000 f0326000 00000000  .........2`.....
+            6032f0 9c030000 03000000 00336000 00000000  .........3`.....
+            603300 b3020000 04000000 10336000 00000000  .........3`.....
+            603310 dd010000 05000000 20336000 00000000  ........ 3`.....
+            603320 bb010000 06000000 00000000 00000000  ................
+            603330 00000000 00000000 00000000 00000000  ................
+            */
+        }
+    }
+    for(int i=0;i<5;i++){
+        if(i==5){
+            *(addr[i]+8) = 0;
+        }else{
+            *(addr[i]+8) = *addr[i+1];
+        }
+    }
+    for(int i=0;i<5;i++){
+        if(*(addr[i]+8) < *(addr[i+1]+8){
+            explode_bomb();
+        }
+        /*
+        addr[4] 6032d0 4c010000 0x14c
+        addr[5] 6032e0 a8000000 0xa8
+        addr[0] 6032f0 9c030000 0x39c
+        addr[1] 603300 b3020000 0x2b3
+        addr[2] 603310 dd010000 0x1dd
+        addr[3] 603320 bb010000 0x1bb
+        603330 00000000 00000000 00000000 00000000  ................
+        */
+    }
+    return 0;
 }
